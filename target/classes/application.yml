@@ -1,29 +1,107 @@
 server:
   port: 8081
   servlet:
-    context-path: /api
+    session:
+      timeout: 30m
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on-param
+  tomcat:
+    basedir: ${java.io.tmpdir}/gt-bff
+  shutdown: graceful
 
 spring:
   application:
     name: gt-bff
   jackson:
     serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
+      write-dates-as-timestamps: false
+      write-durations-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
     time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  # Config import removed for now to fix startup issues
 
+# Application specific properties
+application:
+  version: '1.0.0'  # Application version
+  api:
+    version: 'v1'
+    title: 'GT BFF API'
+    description: 'Backend for Frontend service for GT application'
+  weather:
+    default: "Sunny and 25\u00B0C"  # Escaped degree symbol
+    tokyo: "Clear skies, 26\u201328\u00B0C"  # Escaped en dash and degree symbol
+    london: "Partly cloudy, 18\u201322\u00B0C"  # Escaped en dash and degree symbol
+    newyork: "Sunny, 24\u201328\u00B0C"  # Escaped en dash and degree symbol
+  cache:
+    enabled: true
+    ttl: 300
+
+# Logging configuration
 logging:
   level:
     root: INFO
     com.gt.bff: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+    max-size: 10MB
+    max-history: 7
 
-# API Documentation
+# API Documentation & OpenAPI
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-    operationsSorter: method
-    tagsSorter: alpha
+    operations-sorter: method
+    tags-sorter: alpha
     doc-expansion: none
+    display-request-duration: true
+    filter: true
+    default-model-expand-depth: 1
+    default-model-rendering: model
+    default-models-expand-depth: 1
+    show-extensions: true
+    display-operation-id: true
+    persist-authorization: true
+
+# Actuator endpoints for monitoring
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  health:
+    defaults:
+      enabled: false
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true
+
+# Application specific security (example - customize as needed)
+#security:
+#  jwt:
+#    secret: your-jwt-secret-key-here
+#    expiration: 86400000 # 24 hours in milliseconds

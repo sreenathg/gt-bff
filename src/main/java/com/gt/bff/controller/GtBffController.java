@@ -1,50 +1,99 @@
 package com.gt.bff.controller;
 
-import com.gt.bff.model.request.GtBffRequest;
-import com.gt.bff.model.response.GtBffResponse;
-import com.gt.bff.service.GtBffService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gt.bff.model.dto.TravelRequest;
+import com.gt.bff.model.dto.TravelResponse;
+import com.gt.bff.model.dto.WeatherRequest;
+import com.gt.bff.model.dto.WeatherResponse;
+import com.gt.bff.service.GtService;
+import com.gt.bff.util.ResponseHelper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+
+import jakarta.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.Map;
 
+@Slf4j
 @RestController
-@RequestMapping("/gt")
+@RequiredArgsConstructor
+@Tag(name = "Weather Controller", description = "APIs for weather information")
+@RequestMapping(
+    value = "/api/v1/gt",
+    produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class GtBffController {
+    private static final String BASE_PATH = "/api/v1/gt";
 
-    @Autowired
-    private GtBffService gtBffService;
+    private final GtService gtService;
 
-    @PostMapping
-    public GtBffResponse getWeather(@RequestBody GtBffRequest request) {
-        return gtBffService.processWeatherContext(request);
+    @PostConstruct
+    public void init() {
+        log.info("Initializing GtBffController with base path: {}", BASE_PATH);
     }
 
-    @GetMapping("/weather")
-    public Map<String, Object> getSampleWeather() {
-        Map<String, Object> sampleData = new HashMap<>();
-        sampleData.put("location", "San Francisco, CA");
-        sampleData.put("temperature", 72.5);
-        sampleData.put("unit", "Fahrenheit");
-        sampleData.put("conditions", "Sunny");
-        sampleData.put("humidity", 65);
-        sampleData.put("windSpeed", 8.3);
-        sampleData.put("windDirection", "NW");
-        sampleData.put("timestamp", LocalDateTime.now().toString());
-        return sampleData;
+    @PostMapping("/forecast")
+    @Operation(summary = "Get weather forecast",
+            description = "Retrieves weather forecast for the specified location and date range")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved weather forecast",
+            content = @Content(schema = @Schema(implementation = WeatherResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid input parameters")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<WeatherResponse> getWeatherForecast(
+            @Valid @RequestBody WeatherRequest request) {
+        return ResponseHelper.executeServiceOperation(
+            () -> gtService.getWeatherForecast(request),
+            "getWeatherForecast",
+            "destination: " + request.getDestination()
+        );
     }
 
-    @GetMapping("/searchFilters")
-    public Map<String, Object> getSearchFilters() {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("from", "New York");
-        filters.put("to", "Los Angeles");
-        filters.put("fromDate", LocalDateTime.now().plusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        filters.put("toDate", LocalDateTime.now().plusDays(14).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        filters.put("passengers", 2);
-        filters.put("trip", "RoundTrip");
-        return filters;
+    @GetMapping("/forecast")
+    @Operation(summary = "Get sample weather forecast",
+            description = "Returns a sample weather forecast for demonstration purposes")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved sample weather forecast")
+    public ResponseEntity<Map<String, Object>> getSampleWeather(
+            @RequestParam(required = false, defaultValue = "San Francisco, CA") String location,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseHelper.executeServiceOperation(
+            () -> gtService.getSampleWeather(location, date),
+            "getSampleWeather",
+            "location: " + location + ", date: " + date
+        );
+    }
+
+    @PostMapping("/flights")
+    @Operation(summary = "Plan a trip with flights",
+            description = "Plan a trip with flight options")
+    @ApiResponse(responseCode = "200", description = "Successfully planned travel")
+    @ApiResponse(responseCode = "400", description = "Invalid request parameters")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<TravelResponse> planTripWithFlights(
+            @Valid @RequestBody TravelRequest request) {
+        return ResponseHelper.executeServiceOperation(
+            () -> gtService.planTripWithFlights(request),
+            "planTripWithFlights",
+            "from: " + request.getOrigin() + " to: " + request.getDestination()
+        );
+    }
+    
+    @GetMapping("/search-filters")
+    @Operation(summary = "Get search filters",
+            description = "Returns available search filters for the application")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved search filters")
+    public ResponseEntity<Map<String, Object>> getSearchFilters() {
+        return ResponseHelper.executeServiceOperation(
+            () -> gtService.getSearchFilters(),
+            "getSearchFilters"
+        );
     }
 }
