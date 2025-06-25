@@ -37,19 +37,21 @@ mvn test -Dtest=ClassNameTest#methodName
 ## Application Architecture
 
 ### Core Package Structure
-- `com.gt.bff.config` - Configuration classes including ApplicationProperties for external configuration
-- `com.gt.bff.controller` - REST controllers with OpenAPI documentation
+- `com.gt.bff.config` - Configuration classes including ApplicationProperties for external configuration and CORS setup
+- `com.gt.bff.controller` - REST controllers with OpenAPI documentation (GtBffController, HomeController)
 - `com.gt.bff.service` - Business logic layer with service interfaces and implementations
 - `com.gt.bff.model.dto` - Data Transfer Objects for API requests/responses
 - `com.gt.bff.exception` - Global exception handling with custom error responses
-- `com.gt.bff.constants` - Application constants like API paths
+- `com.gt.bff.constants` - Application constants (ApiPaths, TravelClass, ResponseStatus)
+- `com.gt.bff.util` - Utility classes (ResponseHelper for consistent API responses)
 
 ### Key Dependencies and Frameworks
-- **Spring Boot 3.2.0** with Web, Validation, and Actuator starters
+- **Spring Boot 3.5.3** with Web, Validation, and Actuator starters
 - **Lombok** for boilerplate code reduction (annotations: @Data, @Builder, @RequiredArgsConstructor, @Slf4j)
 - **MapStruct** for object mapping between DTOs and entities
 - **SpringDoc OpenAPI** for automatic API documentation generation
 - **Jackson** for JSON serialization/deserialization
+- **Jakarta Bean Validation** for request/response validation
 
 ### Configuration Management
 - Primary configuration in `application.yml` with structured properties
@@ -111,6 +113,7 @@ All endpoints follow these patterns:
 - Weather forecasting: `/api/v1/gt/forecast` (GET/POST)
 - Travel planning: `/api/v1/gt/flights` (POST)
 - Search filters: `/api/v1/gt/search-filters` (GET)
+- Search processing: `/api/v1/gt/process-search` (POST)
 
 ## Key Implementation Details
 
@@ -128,3 +131,12 @@ All endpoints follow these patterns:
 - Centralized configuration via `@ConfigurationProperties`
 - Type-safe property binding with nested configuration classes
 - Weather forecast configuration per destination in YAML
+- AI/GenAI service configuration with API keys and model parameters
+- CORS configuration for cross-origin requests
+- Custom prompts stored in `src/main/resources/prompts/` directory
+
+### AI Integration
+- GenAI service configuration for travel query processing
+- Custom prompt templates for travel extraction and advice
+- Location extraction and travel planning assistance
+- Configurable model parameters (temperature, top-p, top-k)
