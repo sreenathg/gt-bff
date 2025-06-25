@@ -54,6 +54,14 @@ application:
       - "OPTIONS"
     allowed-headers: "*"
     allow-credentials: true
+  genai:
+    api-key: ${GENAI_API_KEY:}
+    default-model: gemini-2.5-flash
+    temperature: 0.2
+    top-p: 0.8
+    top-k: 40
+    connect-timeout: 10000
+    read-timeout: 30000
 
 # Logging configuration
 logging:

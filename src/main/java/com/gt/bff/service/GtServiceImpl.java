@@ -38,7 +38,7 @@ public class GtServiceImpl implements GtService {
     }
     
     @Override
-    public Map<String, Object> getSearchFilters() {
-        return travelService.getSearchFilters();
+    public Map<String, Object> getSearchFilters(String searchInput) {
+        return travelService.getSearchFilters(searchInput);
     }
 }

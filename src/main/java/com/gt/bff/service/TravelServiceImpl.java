@@ -1,19 +1,27 @@
 package com.gt.bff.service;
 
+import com.gt.bff.config.ApplicationProperties;
 import com.gt.bff.constants.ResponseStatus;
 import com.gt.bff.constants.TravelClass;
 import com.gt.bff.model.dto.TravelRequest;
 import com.gt.bff.model.dto.TravelResponse;
+import com.gt.bff.util.GenAIService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Implementation of travel service operations.
@@ -22,6 +30,25 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class TravelServiceImpl implements TravelService {
+    
+    private final GenAIService genAIService;
+    private final ApplicationProperties applicationProperties;
+    private final ResourceLoader resourceLoader;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    
+    private String travelExtractionPromptTemplate;
+    
+    @jakarta.annotation.PostConstruct
+    private void loadPromptTemplates() {
+        try {
+            Resource resource = resourceLoader.getResource(applicationProperties.getGenai().getTravelExtractionPromptPath());
+            travelExtractionPromptTemplate = resource.getContentAsString(StandardCharsets.UTF_8);
+            log.info("Loaded travel extraction prompt template from: {}", applicationProperties.getGenai().getTravelExtractionPromptPath());
+        } catch (IOException e) {
+            log.error("Failed to load travel extraction prompt template", e);
+            throw new IllegalStateException("Failed to load travel extraction prompt template", e);
+        }
+    }
     
     @Override
     public TravelResponse planTripWithFlights(TravelRequest request) {
@@ -55,16 +82,61 @@ public class TravelServiceImpl implements TravelService {
     }
     
     @Override
-    public Map<String, Object> getSearchFilters() {
-        log.info("Generating search filters");
+    public Map<String, Object> getSearchFilters(String searchInput) {
+        log.info("Generating search filters with input: {}", searchInput);
         
+        // Fallback values
         Map<String, Object> filters = new HashMap<>();
         filters.put("from", "New York");
         filters.put("to", "Los Angeles");
         filters.put("fromDate", LocalDate.now().plusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE));
         filters.put("toDate", LocalDate.now().plusDays(14).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        filters.put("passengers", 2);
-        filters.put("trip", "RoundTrip");
+        filters.put("passengers", 1);
+        filters.put("trip", "Round-Trip");
+        
+        if (searchInput == null) {
+            log.warn("Null search input provided, using default values");
+            return filters;
+        }
+        
+        try {
+            // Invoke GenAI to enhance search filter generation
+            String prompt = travelExtractionPromptTemplate.replace("{searchInput}", searchInput);
+
+            String aiResponse = genAIService.generateContent(prompt);
+            log.debug("GenAI response for search filters: {}", aiResponse);
+            
+            if (aiResponse != null) {
+                try {
+                    // Clean up the response by removing Markdown code blocks if present
+                    String cleanResponse = aiResponse.replaceAll("```(json)?\\s*", "").trim();
+                    
+                    // Parse JSON response from GenAI into Map
+                    Map<String, Object> aiFilters = objectMapper.readValue(cleanResponse, 
+                        new TypeReference<Map<String, Object>>() {});
+                    
+                    // Only update filters with non-null values from AI
+                    aiFilters.forEach((key, value) -> {
+                        if (value != null) {
+                            filters.put(key, value);
+                        }
+                    });
+                    
+                    log.info("Successfully parsed GenAI response into filters");
+                } catch (Exception e) {
+                    log.error("Failed to parse GenAI response, using fallback values: {}", e.getMessage());
+                    // Keep the default values set at the beginning of the method
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error calling GenAI service, using fallback values: {}", e.getMessage());
+            // Keep the default values set at the beginning of the method
+        }
+        
+        // Add search context for potential manual processing if not already present
+        if (!filters.containsKey("searchContext")) {
+            filters.put("searchContext", searchInput);
+        }
         
         return filters;
     }

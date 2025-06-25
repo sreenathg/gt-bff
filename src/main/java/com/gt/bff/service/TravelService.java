@@ -21,7 +21,8 @@ public interface TravelService {
     /**
      * Gets available search filters for travel planning.
      * 
+     * @param searchInput optional search input to customize filters
      * @return search filters data
      */
-    Map<String, Object> getSearchFilters();
+    Map<String, Object> getSearchFilters(String searchInput);
 }

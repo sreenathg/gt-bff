@@ -54,11 +54,30 @@ public class ApplicationProperties {
         private boolean allowCredentials;
     }
     
+    /**
+     * GenAI service configuration properties.
+     */
+    @Data
+    public static class GenAI {
+        private String apiKey;
+        private String defaultModel = "gemini-2.5-flash";
+        private double temperature = 0.2;
+        private double topP = 0.8;
+        private int topK = 40;
+        private int connectTimeout = 10000;
+        private int readTimeout = 30000;
+        private String travelExtractionPromptPath = "classpath:prompts/travel-extraction-prompt.txt";
+        private String explainPromptTemplate = "Explain {topic} in a few words";
+        private String travelAdvicePromptTemplate = "Provide travel advice or information for: {query}";
+        private String locationExtractionPromptTemplate = "Extract the origin location from this travel query. If no specific origin is mentioned, suggest a default popular travel city. Return only the city name and country: {query}";
+    }
+    
     private String version = "1.0.0";
     private final Weather weather = new Weather();
     private final Api api = new Api();
     private final Cache cache = new Cache();
     private final Cors cors = new Cors();
+    private final GenAI genai = new GenAI();
     
     /**
      * Gets the forecast for a specific destination.

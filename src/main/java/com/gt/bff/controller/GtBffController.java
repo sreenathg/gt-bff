@@ -90,10 +90,12 @@ public class GtBffController {
     @Operation(summary = "Get search filters",
             description = "Returns available search filters for the application")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved search filters")
-    public ResponseEntity<Map<String, Object>> getSearchFilters() {
+    public ResponseEntity<Map<String, Object>> getSearchFilters(
+            @RequestParam(required = false) String searchInput) {
         return ResponseHelper.executeServiceOperation(
-            () -> gtService.getSearchFilters(),
-            "getSearchFilters"
+            () -> gtService.getSearchFilters(searchInput),
+            "getSearchFilters",
+            "searchInput: " + searchInput
         );
     }
 
@@ -104,7 +106,7 @@ public class GtBffController {
     @ApiResponse(responseCode = "400", description = "Invalid input parameters")
     public ResponseEntity<Map<String, Object>> processSearch(@RequestBody String searchInput) {
         return ResponseHelper.executeServiceOperation(
-            () -> gtService.getSearchFilters(),
+            () -> gtService.getSearchFilters(searchInput),
             "processSearch",
             "searchInput: " + searchInput
         );

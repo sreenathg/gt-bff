@@ -1,6 +1,7 @@
 package com.gt.bff.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gt.bff.model.dto.TravelRequest;
 import com.gt.bff.model.dto.TravelResponse;
 import com.gt.bff.model.dto.WeatherRequest;
@@ -8,11 +9,14 @@ import com.gt.bff.model.dto.WeatherResponse;
 import com.gt.bff.service.GtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,22 +28,21 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(GtBffController.class)
+@ExtendWith(MockitoExtension.class)
 class GtBffControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private GtService gtService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
+    @InjectMocks
+    private GtBffController gtBffController;
+    
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper = new ObjectMapper();
+    
     private WeatherRequest weatherRequest;
     private WeatherResponse weatherResponse;
     private TravelRequest travelRequest;
@@ -47,6 +50,16 @@ class GtBffControllerTest {
 
     @BeforeEach
     void setUp() {
+        // Configure ObjectMapper for Java 8 date/time types
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        
+        // Initialize MockMvc
+        mockMvc = MockMvcBuilders.standaloneSetup(gtBffController)
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+                .build();
+        
+        // Initialize test data
         weatherRequest = WeatherRequest.builder()
                 .contextId("test-123")
                 .destination("Tokyo")
@@ -183,7 +196,7 @@ class GtBffControllerTest {
         filters.put("to", "Los Angeles");
         filters.put("passengers", 2);
 
-        when(gtService.getSearchFilters()).thenReturn(filters);
+        when(gtService.getSearchFilters(any())).thenReturn(filters);
 
         // When & Then
         mockMvc.perform(get("/api/v1/gt/search-filters"))
