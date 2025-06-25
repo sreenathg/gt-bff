@@ -96,4 +96,17 @@ public class GtBffController {
             "getSearchFilters"
         );
     }
+
+    @PostMapping("/process-search")
+    @Operation(summary = "Process search input",
+            description = "Processes search input string and returns search filters")
+    @ApiResponse(responseCode = "200", description = "Successfully processed search input")
+    @ApiResponse(responseCode = "400", description = "Invalid input parameters")
+    public ResponseEntity<Map<String, Object>> processSearch(@RequestBody String searchInput) {
+        return ResponseHelper.executeServiceOperation(
+            () -> gtService.getSearchFilters(),
+            "processSearch",
+            "searchInput: " + searchInput
+        );
+    }
 }
