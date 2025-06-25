@@ -143,7 +143,8 @@ public class TravelJsonExtractor {
         result.put("passengers", passengers);
         result.put("trip", tripType);
         // Use JSONObject.NULL for proper JSON null representation
-        result.put("toDate", "One-Way".equals(tripType) ? JSONObject.NULL : toDate.format(DATE_FORMATTER));
+        result.put("toDate", "One-Way".equals(tripType) ? JSONObject.NULL : 
+                   (toDate != null ? toDate.format(DATE_FORMATTER) : JSONObject.NULL));
         result.put("from", fromLocation);
         result.put("to", toLocation);
 

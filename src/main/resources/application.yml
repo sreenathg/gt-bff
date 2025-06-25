@@ -14,6 +14,8 @@ server:
 spring:
   application:
     name: gt-bff
+  profiles:
+    active: local
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -61,7 +63,7 @@ application:
     top-p: 0.8
     top-k: 40
     connect-timeout: 10000
-    read-timeout: 30000
+    read-timeout: 100000
 
 # Logging configuration
 logging:
