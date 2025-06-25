@@ -43,10 +43,22 @@ public class ApplicationProperties {
         private long ttl;
     }
     
+    /**
+     * CORS configuration properties.
+     */
+    @Data
+    public static class Cors {
+        private java.util.List<String> allowedOrigins;
+        private java.util.List<String> allowedMethods;
+        private String allowedHeaders;
+        private boolean allowCredentials;
+    }
+    
     private String version = "1.0.0";
     private final Weather weather = new Weather();
     private final Api api = new Api();
     private final Cache cache = new Cache();
+    private final Cors cors = new Cors();
     
     /**
      * Gets the forecast for a specific destination.

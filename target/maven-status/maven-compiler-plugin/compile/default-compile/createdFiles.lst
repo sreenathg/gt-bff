@@ -11,6 +11,7 @@ com/gt/bff/model/dto/TravelResponse$HotelOption.class
 com/gt/bff/exception/ResourceNotFoundException.class
 com/gt/bff/service/WeatherServiceImpl.class
 com/gt/bff/model/dto/TravelResponse$FlightOption$FlightOptionBuilder.class
+com/gt/bff/config/CorsConfig.class
 com/gt/bff/constants/ApiPaths.class
 com/gt/bff/model/dto/TravelResponse$HotelOption$HotelOptionBuilder.class
 com/gt/bff/util/ResponseHelper.class
@@ -18,6 +19,7 @@ com/gt/bff/model/dto/TravelResponse$FlightOption.class
 com/gt/bff/model/dto/TravelResponse$TravelResponseBuilder.class
 com/gt/bff/exception/ErrorResponse$ErrorResponseBuilder.class
 com/gt/bff/service/TravelService.class
+com/gt/bff/config/ApplicationProperties$Cors.class
 com/gt/bff/model/dto/WeatherRequest$WeatherRequestBuilder.class
 com/gt/bff/model/dto/TravelRequest$TravelRequestBuilder.class
 com/gt/bff/service/WeatherService.class

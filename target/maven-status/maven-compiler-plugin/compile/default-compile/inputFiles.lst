@@ -1,3 +1,4 @@
+/Users/sreenathgurujala/git/gt-bff/src/main/java/com/gt/bff/config/CorsConfig.java
 /Users/sreenathgurujala/git/gt-bff/src/main/java/com/gt/bff/constants/ResponseStatus.java
 /Users/sreenathgurujala/git/gt-bff/src/main/java/com/gt/bff/service/TravelService.java
 /Users/sreenathgurujala/git/gt-bff/src/main/java/com/gt/bff/model/dto/TravelRequest.java
