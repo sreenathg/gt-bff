@@ -16,10 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import java.nio.charset.StandardCharsets;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,16 +50,6 @@ class GtBffControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(gtBffController)
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
-    }
-
-    private void setupGtBffControllerMocks() throws Exception {
-        // Setup mock behavior for initialization
-        ApplicationProperties.GenAI genaiProps = new ApplicationProperties.GenAI();
-        genaiProps.getGoogle().setTravelExtractionPromptPath("classpath:prompts/travel-extraction-prompt.txt");
-        when(applicationProperties.getGenai()).thenReturn(genaiProps);
-        when(resourceLoader.getResource(anyString())).thenReturn(resource);
-        when(resource.getContentAsString(StandardCharsets.UTF_8))
-            .thenReturn("Extract travel information from user input: {searchInput}");
     }
 
     @Test

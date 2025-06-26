@@ -2,7 +2,6 @@ package com.gt.bff.service;
 
 import com.gt.bff.config.ApplicationProperties;
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,6 @@ public class GoogleGenAIService implements GenAIService {
     private final Counter genaiErrorCounter;
     private final Timer genaiTravelAdviceTimer;
     private final Timer genaiLocationExtractionTimer;
-    private final MeterRegistry meterRegistry;
     private final AIResponseValidator aiResponseValidator;
     private boolean isInitialized = false;
 
