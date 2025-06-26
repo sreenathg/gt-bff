@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GT BFF is a Spring Boot 3.2.0 Backend for Frontend (BFF) service built with Java 17 and Maven. It provides a unified API layer for weather forecasting and travel planning functionality.
+GT BFF is a Spring Boot 3.5.3 Backend for Frontend (BFF) service built with Java 17 and Maven. It provides a unified API layer for weather forecasting, travel planning, and AI-powered travel assistance functionality.
 
 ## Build and Development Commands
 
@@ -37,13 +37,14 @@ mvn test -Dtest=ClassNameTest#methodName
 ## Application Architecture
 
 ### Core Package Structure
-- `com.gt.bff.config` - Configuration classes including ApplicationProperties for external configuration and CORS setup
+- `com.gt.bff.config` - Configuration classes including ApplicationProperties, CORS setup, GenAI configuration validation, and metrics config
 - `com.gt.bff.controller` - REST controllers with OpenAPI documentation (GtBffController, HomeController)
-- `com.gt.bff.service` - Business logic layer with service interfaces and implementations
+- `com.gt.bff.service` - Business logic layer with service interfaces and implementations including AI services (GenAIService, GoogleGenAIService, TravelService, SearchFilterService)
 - `com.gt.bff.model.dto` - Data Transfer Objects for API requests/responses
-- `com.gt.bff.exception` - Global exception handling with custom error responses
+- `com.gt.bff.model.schema` - Schema definitions for AI response validation
+- `com.gt.bff.exception` - Global exception handling with custom error responses and GenAI-specific exceptions
 - `com.gt.bff.constants` - Application constants (ApiPaths, TravelClass, ResponseStatus)
-- `com.gt.bff.util` - Utility classes (ResponseHelper for consistent API responses)
+- `com.gt.bff.util` - Utility classes (ResponseHelper, TravelJsonExtractor, AIResponseValidator)
 
 ### Key Dependencies and Frameworks
 - **Spring Boot 3.5.3** with Web, Validation, and Actuator starters
@@ -52,6 +53,9 @@ mvn test -Dtest=ClassNameTest#methodName
 - **SpringDoc OpenAPI** for automatic API documentation generation
 - **Jackson** for JSON serialization/deserialization
 - **Jakarta Bean Validation** for request/response validation
+- **Google GenAI** for AI-powered travel query processing and assistance
+- **Micrometer** for metrics collection and monitoring
+- **JSON processing** for structured data handling and parsing
 
 ### Configuration Management
 - Primary configuration in `application.yml` with structured properties
@@ -65,8 +69,10 @@ mvn test -Dtest=ClassNameTest#methodName
 - Structured error responses via GlobalExceptionHandler
 
 ### Service Layer Architecture
-- Service interfaces (`GtService`) with concrete implementations (`GtServiceImpl`)
+- Service interfaces with concrete implementations (TravelService, GenAIService)
+- AI-powered services (GoogleGenAIService, SearchFilterService) for intelligent query processing
 - Mock data generation for development/testing purposes
+- JSON extraction and validation services (TravelJsonExtractor, AIResponseValidator)
 - Logging at both controller and service layers for request tracking
 
 ## Application Configuration
@@ -105,8 +111,9 @@ mvn test -Dtest=ClassNameTest#methodName
 
 ### Error Handling
 - Global exception handler provides consistent error responses
-- Custom exceptions like ResourceNotFoundException
+- Custom exceptions (ResourceNotFoundException, GenAIException, GenAITimeoutException, GenAIRateLimitException, GenAIConfigurationException)
 - Validation errors automatically formatted into structured responses
+- AI service specific error handling with timeout and rate limit management
 
 ### API Endpoint Patterns
 All endpoints follow these patterns:

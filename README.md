@@ -5,15 +5,17 @@ A Spring Boot-based Backend for Frontend (BFF) service for the GT application th
 ## Features
 
 - RESTful API endpoints for weather forecasting
-- Travel planning with flight options
-- AI-powered search filters and query processing
+- Travel planning with comprehensive flight, hotel, and activity options
+- AI-powered search filters and intelligent query processing using Google GenAI
+- Travel data extraction and JSON processing
 - Input validation with Jakarta Bean Validation
 - Global exception handling
 - API documentation with Swagger UI/OpenAPI 3
 - Structured logging with SLF4J
-- Health check and monitoring endpoints with Actuator
+- Health check and monitoring endpoints with Actuator and Prometheus metrics
 - CORS configuration for cross-origin requests
 - Custom configuration properties management
+- AI integration with Google GenAI for intelligent travel assistance
 
 ## Prerequisites
 
@@ -34,16 +36,22 @@ A Spring Boot-based Backend for Frontend (BFF) service for the GT application th
    mvn clean install
    ```
 
-3. **Run the application**
+3. **Set up environment variables (optional)**
+   ```bash
+   export GENAI_API_KEY=your-google-genai-api-key
+   ```
+
+4. **Run the application**
    ```bash
    mvn spring-boot:run
    ```
 
-4. **Access the application**
+5. **Access the application**
    - API Base URL: `http://localhost:8081/api/v1/gt`
    - Swagger UI: `http://localhost:8081/swagger-ui.html`
    - API Docs: `http://localhost:8081/v3/api-docs`
    - Actuator Health: `http://localhost:8081/actuator/health`
+   - Prometheus Metrics: `http://localhost:8081/actuator/prometheus`
 
 ## API Endpoints
 
@@ -123,6 +131,8 @@ mvn test -Dtest=ClassNameTest#methodName
 - Custom application properties defined in `ApplicationProperties` class
 - CORS enabled for localhost:3000 and localhost:8080
 - Logging configured with file rotation (logs/application.log)
+- Google GenAI integration with configurable API key and model parameters
+- Prometheus metrics endpoint enabled at `/actuator/prometheus`
 
 ### Key Technologies
 - **Spring Boot 3.5.3** with Web, Validation, and Actuator starters
@@ -130,6 +140,9 @@ mvn test -Dtest=ClassNameTest#methodName
 - **MapStruct** for object mapping
 - **SpringDoc OpenAPI** for API documentation
 - **Jakarta Bean Validation** for input validation
+- **Google GenAI** for AI-powered travel assistance and query processing
+- **Micrometer** for metrics collection and Prometheus integration
+- **JSON processing** for structured data handling
 
 ### Code Style
 This project uses Google Java Format. Please ensure your code is formatted before committing.
