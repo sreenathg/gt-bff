@@ -1,10 +1,10 @@
-package com.gt.bff.util;
+package com.gt.bff.service;
 
 /**
  * Interface for Generative AI operations
  */
 public interface GenAIService {
-    
+
     /**
      * Generates content using AI with default model
      *
@@ -12,7 +12,7 @@ public interface GenAIService {
      * @return Generated content as string
      */
     String generateContent(String prompt);
-    
+
     /**
      * Generates content using AI with specified model
      *
@@ -21,7 +21,7 @@ public interface GenAIService {
      * @return Generated content as string
      */
     String generateContent(String model, String prompt);
-    
+
     /**
      * Generates a simple text explanation using AI
      *
@@ -29,7 +29,7 @@ public interface GenAIService {
      * @return AI-generated explanation
      */
     String explainTopic(String topic);
-    
+
     /**
      * Processes travel-related queries using AI
      *
@@ -37,7 +37,7 @@ public interface GenAIService {
      * @return AI-generated travel advice or information
      */
     String processTravelQuery(String travelQuery);
-    
+
     /**
      * Extracts geo location information from travel query
      *
@@ -45,7 +45,7 @@ public interface GenAIService {
      * @return Extracted or inferred location information
      */
     String extractGeoLocation(String query);
-    
+
     /**
      * Checks if the AI service is available and ready to use
      *

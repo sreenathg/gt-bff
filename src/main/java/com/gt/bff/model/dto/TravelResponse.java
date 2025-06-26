@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TravelResponse {
-    
+
     private String requestId;
     private String status;
     private String origin;
@@ -34,7 +34,7 @@ public class TravelResponse {
     private List<ActivityOption> activityOptions;
     private BigDecimal totalEstimatedCost;
     private String currency;
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -53,7 +53,7 @@ public class TravelResponse {
         private String travelClass;
         private Integer availableSeats;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -68,7 +68,7 @@ public class TravelResponse {
         private List<String> amenities;
         private List<RoomType> roomTypes;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -79,7 +79,7 @@ public class TravelResponse {
         private Integer availableRooms;
         private BigDecimal price;
     }
-    
+
     @Data
     @Builder
     @NoArgsConstructor

@@ -55,15 +55,72 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(GenAITimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleGenAITimeoutException(GenAITimeoutException ex, WebRequest request) {
+        log.error("GenAI service timeout: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.REQUEST_TIMEOUT.value(),
+                HttpStatus.REQUEST_TIMEOUT.getReasonPhrase(),
+                "AI service request timed out. Please try again later.",
+                request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.REQUEST_TIMEOUT);
+    }
+
+    @ExceptionHandler(GenAIRateLimitException.class)
+    public ResponseEntity<ErrorResponse> handleGenAIRateLimitException(GenAIRateLimitException ex, WebRequest request) {
+        log.warn("GenAI service rate limit exceeded: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.TOO_MANY_REQUESTS.value(),
+                HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(),
+                "AI service rate limit exceeded. Please try again later.",
+                request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @ExceptionHandler(GenAIConfigurationException.class)
+    public ResponseEntity<ErrorResponse> handleGenAIConfigurationException(GenAIConfigurationException ex, WebRequest request) {
+        log.error("GenAI service configuration error: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(),
+                "AI service is temporarily unavailable due to configuration issues.",
+                request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(GenAIException.class)
+    public ResponseEntity<ErrorResponse> handleGenAIException(GenAIException ex, WebRequest request) {
+        log.error("GenAI service error: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_GATEWAY.value(),
+                HttpStatus.BAD_GATEWAY.getReasonPhrase(),
+                "AI service encountered an error. Please try again later.",
+                request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_GATEWAY);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
-        log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
+        String requestPath = request.getDescription(false);
+        
+        // Skip logging for actuator endpoints and static resources that are expected to be missing
+        if (requestPath.contains("/actuator/") || requestPath.contains("favicon.ico") || 
+            ex.getMessage().contains("No static resource")) {
+            log.debug("Resource not found: {} - {}", requestPath, ex.getMessage());
+        } else {
+            log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
+        }
+        
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 "An unexpected error occurred",
-                request.getDescription(false));
+                requestPath);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

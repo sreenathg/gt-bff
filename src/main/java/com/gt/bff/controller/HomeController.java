@@ -33,10 +33,10 @@ import java.util.concurrent.TimeUnit;
 public class HomeController {
 
     private final ApplicationProperties applicationProperties;
-    
+
     @Value("${spring.application.name:gt-bff}")
     private String appName;
-    
+
     @Value("${spring.profiles.active:local}")
     private String environment;
 

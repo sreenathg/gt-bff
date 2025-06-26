@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
-    
+
     /**
      * API related properties.
      */
@@ -21,7 +21,7 @@ public class ApplicationProperties {
         private String title;
         private String description;
     }
-    
+
     /**
      * Weather service related properties.
      */
@@ -33,7 +33,7 @@ public class ApplicationProperties {
         private String london;
         private String newyork;
     }
-    
+
     /**
      * Cache configuration properties.
      */
@@ -42,7 +42,7 @@ public class ApplicationProperties {
         private boolean enabled;
         private long ttl;
     }
-    
+
     /**
      * CORS configuration properties.
      */
@@ -53,32 +53,37 @@ public class ApplicationProperties {
         private String allowedHeaders;
         private boolean allowCredentials;
     }
-    
+
     /**
      * GenAI service configuration properties.
      */
     @Data
     public static class GenAI {
-        private String apiKey;
-        private String defaultModel = "gemini-2.5-flash";
-        private double temperature = 0.2;
-        private double topP = 0.8;
-        private int topK = 40;
-        private int connectTimeout = 10000;
-        private int readTimeout = 30000;
-        private String travelExtractionPromptPath = "classpath:prompts/travel-extraction-prompt.txt";
-        private String explainPromptTemplate = "Explain {topic} in a few words";
-        private String travelAdvicePromptTemplate = "Provide travel advice or information for: {query}";
-        private String locationExtractionPromptTemplate = "Extract the origin location from this travel query. If no specific origin is mentioned, suggest a default popular travel city. Return only the city name and country: {query}";
+        private final Google google = new Google();
+
+        @Data
+        public static class Google {
+            private String apiKey;
+            private String defaultModel = "gemini-2.5-flash";
+            private double temperature = 0.2;
+            private double topP = 0.8;
+            private int topK = 40;
+            private int connectTimeout = 10000;
+            private int readTimeout = 30000;
+            private String travelExtractionPromptPath = "classpath:prompts/travel-extraction-prompt.txt";
+            private String explainPromptTemplate = "Explain {topic} in a few words";
+            private String travelAdvicePromptTemplate = "Provide travel advice or information for: {query}";
+            private String locationExtractionPromptTemplate = "Extract the origin location from this travel query. If no specific origin is mentioned, suggest a default popular travel city. Return only the city name and country: {query}";
+        }
     }
-    
+
     private String version = "1.0.0";
     private final Weather weather = new Weather();
     private final Api api = new Api();
     private final Cache cache = new Cache();
     private final Cors cors = new Cors();
     private final GenAI genai = new GenAI();
-    
+
     /**
      * Gets the forecast for a specific destination.
      * 
@@ -89,7 +94,7 @@ public class ApplicationProperties {
         if (destination == null) {
             return weather.getDefaultForecast();
         }
-        
+
         return switch (destination.toLowerCase()) {
             case "tokyo" -> weather.getTokyo();
             case "london" -> weather.getLondon();

@@ -17,21 +17,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TravelRequest {
-    
+
     @NotBlank(message = "Origin is required")
     private String origin;
-    
+
     @NotBlank(message = "Destination is required")
     private String destination;
-    
+
     @NotNull(message = "Departure date is required")
     private LocalDate departureDate;
-    
+
     private LocalDate returnDate;
-    
+
     private Integer numberOfTravelers;
-    
+
     private String travelClass;
-    
+
     private String preferences;
 }
