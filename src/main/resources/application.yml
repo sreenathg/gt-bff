@@ -70,7 +70,7 @@ application:
 logging:
   level:
     root: INFO
-    com.gt.bff: DEBUG
+    com.gt.bff: INFO
     org.springframework.web: INFO
     org.hibernate: WARN
   pattern:
