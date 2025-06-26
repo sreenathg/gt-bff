@@ -23,9 +23,12 @@ Extraction Rules
     * For "2 week vacation": Set appropriate start and end dates
     * Always set start and end dates in future
 3. Locations:
-    * From: If not mentioned, use San Francisco
-    * To: If not mentioned, default to "London"
+    * From: If not mentioned, default to "San Francisco SFO"
+    * To: If not mentioned, default to "London LHR"
     * Extract specific locations when provided
+    * If only city name is provided, use the default airport for that city
+    * If only airport code is provided, use the default city for that airport
+    * If location is not a city or airport, find nearest airport and use that
 4. Trip Type:
     * Default to "Round-Trip" unless explicitly stated as one-way
     * Look for keywords like "one-way", "moving", "relocating" for One-Way trips
@@ -49,6 +52,6 @@ For input: "Plan a 2 week vacation from New York to London in July 2025"
     "passengers": 1,
     "trip": "Round-Trip",
     "toDate": "2025-07-15",
-    "from": "New York",
-    "to": "London"
+    "from": "San Francisco SFO",
+    "to": "London LHR"
 }

@@ -31,8 +31,8 @@ import java.util.Map;
     produces = MediaType.APPLICATION_JSON_VALUE
 )
 public class GtBffController {
-    private static final String DEFAULT_FROM_LOCATION = "New York";
-    private static final String DEFAULT_TO_LOCATION = "Los Angeles";
+    private static final String DEFAULT_FROM_LOCATION = "San Francisco SFO";
+    private static final String DEFAULT_TO_LOCATION = "London LHR";
     private static final int DEFAULT_PASSENGERS = 1;
     private static final String DEFAULT_TRIP_TYPE = "Round-Trip";
     private static final int DEFAULT_DEPARTURE_DAYS = 7;
@@ -61,7 +61,6 @@ public class GtBffController {
             throw new IllegalStateException("Failed to load travel extraction prompt template", e);
         }
     }
-
 
     @GetMapping("/search-filters")
     @Operation(summary = "Get search filters",
@@ -98,7 +97,7 @@ public class GtBffController {
             log.warn("Null search input provided, using default values");
             return filters;
         }
-        
+                    
         enhanceFiltersWithAI(searchInput, filters);
         addSearchContext(searchInput, filters);
         

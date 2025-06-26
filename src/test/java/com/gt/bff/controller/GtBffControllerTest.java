@@ -57,8 +57,8 @@ class GtBffControllerTest {
         // When & Then - No need to mock GenAI since null input returns early
         mockMvc.perform(get("/api/v1/gt/search-filters"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.from").value("New York"))
-                .andExpect(jsonPath("$.to").value("Los Angeles"))
+                .andExpect(jsonPath("$.from").value("San Francisco SFO"))
+                .andExpect(jsonPath("$.to").value("London LHR"))
                 .andExpect(jsonPath("$.passengers").value(1))
                 .andExpect(jsonPath("$.trip").value("Round-Trip"));
     }
@@ -72,8 +72,8 @@ class GtBffControllerTest {
         mockMvc.perform(get("/api/v1/gt/search-filters")
                         .param("searchInput", "Boston to Seattle for 2 people"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.from").value("New York"))
-                .andExpect(jsonPath("$.to").value("Los Angeles"))
+                .andExpect(jsonPath("$.from").value("San Francisco SFO"))
+                .andExpect(jsonPath("$.to").value("London LHR"))
                 .andExpect(jsonPath("$.passengers").value(1))
                 .andExpect(jsonPath("$.trip").value("Round-Trip"))
                 .andExpect(jsonPath("$.searchContext").value("Boston to Seattle for 2 people"));
