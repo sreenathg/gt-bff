@@ -26,8 +26,11 @@ replay_pid*
 # Spring Boot Configuration
 application-local.properties
 
-# Target directory
+# Target directories - ignore all target directories and their contents
+**/target/
 target/
+**/target/**
+**/target/*
 
 # IDE specific files
 .idea/
