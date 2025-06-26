@@ -35,7 +35,10 @@ target/
 # IDE specific files
 .idea/
 *.iml
+# VS Code settings and directories
+**/.vscode/
 .vscode/
+**/.vscode/**
 .settings/
 .project
 .classpath
