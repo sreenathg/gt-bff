@@ -1,57 +1,62 @@
-Extract travel information from user input and return it in the specified JSON format.
-
-Input : "{searchInput}"
-
+Prompt: Extract Travel Information from User Input
+Input Example
+Input: "{searchInput}"
 Output Format
-Return a JSON object with the following structure:
 {
-    "fromDate": "YYYY-MM-DD",
-    "passengers": number,
-    "trip": "Round-Trip/One-Way",
-    "toDate": "YYYY-MM-DD",
-    "from": "location",
-    "to": "location"
+"fromDate": "YYYY-MM-DD",
+"passengers": number,
+"trip": "Round-Trip" | "One-Way",
+"toDate": "YYYY-MM-DD" | "",
+"from": "location",
+"to": "location"
 }
-
 Extraction Rules
-1. Passengers:
-    * Default to 1 if not mentioned in the input
-    * Extract number if explicitly stated (e.g., "for 3 people", "family of 4")
-2. Trip Duration:
-    * If no duration mentioned: Start from next Friday and return after 1 week
-    * If duration specified: Calculate based on user input
-    * For "2 week vacation": Set appropriate start and end dates
-    * Always set start and end dates in future
-3. Locations:
-    * From: If not mentioned, default to "San Francisco SFO"
-    * To: If not mentioned, default to "London LHR"
-    * Extract specific locations when provided
-    * If only city name is provided, use the default airport for that city
-    * If only airport code is provided, use the default city for that airport
-    * If location is not a city or airport, find nearest airport and use that
-4. Trip Type:
-    * Default to "Round-Trip" unless explicitly stated as one-way
-    * Look for keywords like "one-way", "moving", "relocating" for One-Way trips
-5. Date Handling:
-    * Parse relative dates (e.g., "next month", "in July")
-    * Convert to YYYY-MM-DD format
-    * If only month/year given, start from beginning of month
-    * Calculate toDate based on duration from fromDate
-
+1. Passengers
+- Default to 1 if not specified.
+- Recognize phrases like:
+- "for 3 people"
+- "family of 4"
+- "family" -> 4 passengers
+- "couple" -> 2 passengers
+- "friends" -> 2 passengers
+- "me and my 2 friends" -> 3 passengers
+2. Trip Duration and Dates
+- If no duration given:
+- Use next Friday as fromDate
+- Default toDate is one or two weeks later
+- Handle phrases like:
+- "1 week", "2-week vacation"
+- Handle time references:
+- "next month", "in July 2025", "this December"
+- Always ensure dates are in the future
+- Format all dates in YYYY-MM-DD
+3. Locations
+- from:
+- If not mentioned, default to San Francisco SFO
+- If a city name is provided, map to its primary airport
+- If an airport code is given, use corresponding city
+- to:
+- If not mentioned, default to London LHR
+- If a country is mentioned (e.g., "India"), map to a major international airport in that country
+4. Trip Type
+- Default to "Round-Trip"
+- Use "One-Way" if user says:
+- "one-way", "relocating", "moving"
 Processing Instructions
-1. Analyze the user input text
-2. Extract relevant travel information
-3. Apply default rules where information is missing
-4. Format as valid JSON
-5. Ensure all dates are in YYYY-MM-DD format
-
-Example Output for Given Input
-For input: "Plan a 2 week vacation from New York to London in July 2025"
+1. Parse the user input for relevant travel details.
+2. Fill in missing information using defaults.
+3. Convert fuzzy or relative dates into YYYY-MM-DD.
+4. Map country/city names to the default airport.
+5. Return the output as a valid JSON object.
+Example
+Input:
+"Book a 2-week vacation to Japan for me and my wife in April 2026"
+Output:
 {
-    "fromDate": "2025-07-01",
-    "passengers": 1,
-    "trip": "Round-Trip",
-    "toDate": "2025-07-15",
-    "from": "San Francisco SFO",
-    "to": "London LHR"
+"fromDate": "2026-04-01",
+"passengers": 2,
+"trip": "Round-Trip",
+"toDate": "2026-04-15",
+"from": "San Francisco SFO",
+"to": "Tokyo NRT"
 }
