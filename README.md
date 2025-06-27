@@ -2,21 +2,6 @@
 
 A Spring Boot-based Backend for Frontend (BFF) service for the GT application that provides weather forecasting and travel planning functionality.
 
-## Features
-
-- RESTful API endpoints for weather forecasting
-- Travel planning with comprehensive flight, hotel, and activity options
-- AI-powered search filters and intelligent query processing using Google GenAI
-- Travel data extraction and JSON processing
-- Input validation with Jakarta Bean Validation
-- Global exception handling
-- API documentation with Swagger UI/OpenAPI 3
-- Structured logging with SLF4J
-- Health check and monitoring endpoints with Actuator and Prometheus metrics
-- CORS configuration for cross-origin requests
-- Custom configuration properties management
-- AI integration with Google GenAI for intelligent travel assistance
-
 ## Prerequisites
 
 - Java 17+
@@ -27,7 +12,7 @@ A Spring Boot-based Backend for Frontend (BFF) service for the GT application th
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sreenathg/gt-bff.git
    cd gt-bff
    ```
 
@@ -38,7 +23,7 @@ A Spring Boot-based Backend for Frontend (BFF) service for the GT application th
 
 3. **Set up environment variables (optional)**
    ```bash
-   export GENAI_API_KEY=your-google-genai-api-key
+   Set properties application.genai.google.api-key in application-local.properties to enable Google GenAI integration
    ```
 
 4. **Run the application**
@@ -51,44 +36,12 @@ A Spring Boot-based Backend for Frontend (BFF) service for the GT application th
    - Swagger UI: `http://localhost:8081/swagger-ui.html`
    - API Docs: `http://localhost:8081/v3/api-docs`
    - Actuator Health: `http://localhost:8081/actuator/health`
-   - Prometheus Metrics: `http://localhost:8081/actuator/prometheus`
 
-## API Endpoints
+## Documentation
 
-### Weather Forecast
-- **POST** `/api/v1/gt/forecast` - Get weather forecast for a destination
-- **GET** `/api/v1/gt/forecast` - Get sample weather forecast
+📖 **Complete API Documentation**: [`docs/`](./docs/)
 
-### Travel Planning
-- **POST** `/api/v1/gt/flights` - Plan a trip with flight options
-
-### Search & Filters
-- **GET** `/api/v1/gt/search-filters` - Get available search filters
-- **POST** `/api/v1/gt/process-search` - Process search input and extract filters
-
-### Example: Get Weather Forecast
-```bash
-curl -X POST http://localhost:8081/api/v1/gt/forecast \
-  -H "Content-Type: application/json" \
-  -d '{
-    "contextId": "123",
-    "destination": "Tokyo",
-    "travelWindow": "2024-01-01 to 2024-01-07"
-  }'
-```
-
-### Example: Plan Trip with Flights
-```bash
-curl -X POST http://localhost:8081/api/v1/gt/flights \
-  -H "Content-Type: application/json" \
-  -d '{
-    "origin": "San Francisco",
-    "destination": "Tokyo",
-    "departureDate": "2024-06-01",
-    "returnDate": "2024-06-07",
-    "passengers": 2
-  }'
-```
+- **[API Overview](./docs/API_OVERVIEW.md)** - Complete setup guide and feature overviewATION_SYSTEM.md)** - Security and validation features
 
 ## Project Structure
 
@@ -99,13 +52,23 @@ src/main/java/com/gt/bff/
 ├── exception/           # Global exception handling
 ├── model/dto/           # Data Transfer Objects for API requests/responses
 ├── service/             # Business logic layer with interfaces and implementations
-├── util/                # Utility classes (ResponseHelper)
+├── util/                # Utility classes (ResponseHelper, SearchInputValidator)
 └── constants/           # Application constants
 
 src/main/resources/
 ├── application.yml      # Main configuration file
 ├── prompts/             # AI prompt templates
+├── airportcodes/        # Airport data files (auto-generated)
 └── static/              # Static resources
+
+docs/                    # Complete API documentation
+├── README.md            # Documentation navigation
+├── API_OVERVIEW.md      # Setup and configuration guide
+├── SEARCH_FILTERS.md    # Search filters endpoint
+├── PROCESS_SEARCH.md    # Advanced search with validation
+├── AIRPORTS.md          # Airport data endpoint
+├── ERROR_HANDLING.md    # Error formats and data models
+└── VALIDATION_SYSTEM.md # Security and validation architecture
 ```
 
 ## Development
@@ -126,14 +89,6 @@ mvn test -Dtest=ClassNameTest
 mvn test -Dtest=ClassNameTest#methodName
 ```
 
-### Configuration
-- Server runs on port 8081
-- Custom application properties defined in `ApplicationProperties` class
-- CORS enabled for localhost:3000 and localhost:8080
-- Logging configured with file rotation (logs/application.log)
-- Google GenAI integration with configurable API key and model parameters
-- Prometheus metrics endpoint enabled at `/actuator/prometheus`
-
 ### Key Technologies
 - **Spring Boot 3.5.3** with Web, Validation, and Actuator starters
 - **Lombok** for boilerplate code reduction
@@ -144,8 +99,6 @@ mvn test -Dtest=ClassNameTest#methodName
 - **Micrometer** for metrics collection and Prometheus integration
 - **JSON processing** for structured data handling
 
-### Code Style
-This project uses Google Java Format. Please ensure your code is formatted before committing.
 
 ## License
 
