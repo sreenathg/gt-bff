@@ -98,7 +98,7 @@ public class GtBffController {
             return filters;
         }
                     
-        enhanceFiltersWithAI(searchInput, filters);
+        //enhanceFiltersWithAI(searchInput, filters);
         addSearchContext(searchInput, filters);
         
         return filters;
