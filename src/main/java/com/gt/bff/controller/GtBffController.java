@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -122,6 +123,28 @@ public class GtBffController {
     private void addSearchContext(String searchInput, Map<String, Object> filters) {
         if (!filters.containsKey("searchContext")) {
             filters.put("searchContext", searchInput);
+        }
+    }
+    
+    @GetMapping("/airports")
+    @Operation(summary = "Get airports with IATA codes",
+            description = "Returns all airports that have valid IATA codes with city and country information")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved airports")
+    @ApiResponse(responseCode = "404", description = "Airports file not found")
+    public ResponseEntity<String> getAirports() {
+        try {
+            Resource resource = resourceLoader.getResource("classpath:airportcodes/gt-airports.json");
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            String airportsJson = resource.getContentAsString(StandardCharsets.UTF_8);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(airportsJson);
+        } catch (IOException e) {
+            log.error("Failed to read airports file: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

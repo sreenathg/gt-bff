@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -77,5 +79,44 @@ class GtBffControllerTest {
                 .andExpect(jsonPath("$.passengers").value(1))
                 .andExpect(jsonPath("$.trip").value("Round-Trip"))
                 .andExpect(jsonPath("$.searchContext").value("Boston to Seattle for 2 people"));
+    }
+
+    @Test
+    void getAirports_WhenFileExists_ShouldReturnAirportsJson() throws Exception {
+        // Given
+        String expectedJson = "[{\"iata\":\"SFO\",\"city\":\"San Francisco\",\"country\":\"US\"},{\"iata\":\"LAX\",\"city\":\"Los Angeles\",\"country\":\"US\"}]";
+        when(resourceLoader.getResource("classpath:airportcodes/gt-airports.json")).thenReturn(resource);
+        when(resource.exists()).thenReturn(true);
+        when(resource.getContentAsString(any())).thenReturn(expectedJson);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/gt/airports"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().string(containsString("SFO")))
+                .andExpect(content().string(containsString("San Francisco")));
+    }
+
+    @Test
+    void getAirports_WhenFileNotExists_ShouldReturn404() throws Exception {
+        // Given
+        when(resourceLoader.getResource("classpath:airportcodes/gt-airports.json")).thenReturn(resource);
+        when(resource.exists()).thenReturn(false);
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/gt/airports"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAirports_WhenIOException_ShouldReturn500() throws Exception {
+        // Given
+        when(resourceLoader.getResource("classpath:airportcodes/gt-airports.json")).thenReturn(resource);
+        when(resource.exists()).thenReturn(true);
+        when(resource.getContentAsString(any())).thenThrow(new java.io.IOException("File read error"));
+
+        // When & Then
+        mockMvc.perform(get("/api/v1/gt/airports"))
+                .andExpect(status().isInternalServerError());
     }
 }
