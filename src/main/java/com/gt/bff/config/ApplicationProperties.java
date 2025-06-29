@@ -74,6 +74,7 @@ public class ApplicationProperties {
             private String explainPromptTemplate = "Explain {topic} in a few words";
             private String travelAdvicePromptTemplate = "Provide travel advice or information for: {query}";
             private String locationExtractionPromptTemplate = "Extract the origin location from this travel query. If no specific origin is mentioned, suggest a default popular travel city. Return only the city name and country: {query}";
+            private boolean enableAIEnhancement = true;
         }
     }
 

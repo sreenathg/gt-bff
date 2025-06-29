@@ -1,8 +1,9 @@
-  ________.__        ___.            ___________              __    __                
- /  _____/|  |   ____\_ |__   ____   \__    ___/______  _____/  |__/  |_  ___________ 
-/   \  ___|  |  /  _ \| __ \_/ __ \    |    |  \_  __ \/  _ \   __\   __\/ __ \_  __ \
-\    \_\  \  |_(  <_> ) \_\ \  ___/    |    |   |  | \(  <_> )  |  |  | \  ___/|  | \/
- \______  /____/\____/|___  /\___  >   |____|   |__|   \____/|__|  |__|  \___  >__|   
-        \/                \/     \/                                          \/       
-        
-:: GT BFF Service :: (v${application.formatted-version:${application.version}})
+${AnsiColor.BRIGHT_CYAN}  ________.__        ___.           ${AnsiColor.BRIGHT_GREEN} ___________              __    __                
+${AnsiColor.BRIGHT_CYAN} /  _____/|  |   ____\_ |__   ____   ${AnsiColor.BRIGHT_GREEN}\__    ___/______  _____/  |__/  |_  ___________ 
+${AnsiColor.BRIGHT_CYAN}/   \  ___|  |  /  _ \| __ \_/ __ \   ${AnsiColor.BRIGHT_GREEN}  |    |  \_  __ \/  _ \   __\   __\/ __ \_  __ \
+${AnsiColor.BRIGHT_CYAN}\    \_\  \  |_(  <_> ) \_\ \  ___/   ${AnsiColor.BRIGHT_GREEN}  |    |   |  | \(  <_> )  |  |  | \  ___/|  | \/
+${AnsiColor.BRIGHT_CYAN} \______  /____/\____/|___  /\___  >   ${AnsiColor.BRIGHT_GREEN} |____|   |__|   \____/|__|  |__|  \___  >__|   
+${AnsiColor.BRIGHT_CYAN}        \/                \/     \/   ${AnsiColor.BRIGHT_GREEN}                                   \/       ${AnsiColor.DEFAULT}
+
+${AnsiColor.BRIGHT_YELLOW}:: ${AnsiColor.BRIGHT_WHITE}GT BFF Service ${AnsiColor.BRIGHT_YELLOW}:: ${AnsiColor.BRIGHT_WHITE}(v${application.formatted-version:${application.version}})${AnsiColor.DEFAULT}
+

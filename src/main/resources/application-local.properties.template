@@ -5,6 +5,7 @@
 # GenAI Configuration - Local Development
 # Get your API key from: https://makersuite.google.com/app/apikey
 application.genai.google.api-key=YOUR_GOOGLE_GENAI_API_KEY_HERE
+application.genai.google.enableAIEnhancement=true
 
 # Additional local development settings can be added here
 # Example: database connections, debug settings, etc.
