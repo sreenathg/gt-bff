@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 @Component
 public class SearchInputValidator {
-    private static final int MIN_LENGTH = 3;
-    private static final int MAX_LENGTH = 500;
+    static final int MIN_LENGTH = 3;
+    static final int MAX_LENGTH = 500;
     private static final int MIN_WORDS = 5;
     
     // Security patterns

@@ -28,7 +28,7 @@ echo "✅ Logs cleaned successfully"
 
 # Step 2: Clean and build the project
 echo "🔨 Running 'mvn clean install'..."
-mvn clean install
+mvn clean install -Djacoco.skip=true
 
 # Check if build was successful
 if [ $? -eq 0 ]; then
